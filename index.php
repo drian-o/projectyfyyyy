@@ -1,41 +1,58 @@
-<?php
+<?php 
+
 /////////////////////////////////////////
-//   LICENSE GAMES BY     : SOFTGAMINGS //
-//   SOURCE CODE BUILD BY : ZULHAYKER   //
-//   COPYRIGHT @2024------ALL RESERVED  //   
+//  LICENSE GAMES BY     : SOFTGAMINGS //
+//  SOURCE CODE BUILD BY : ZULHAYKER   //
+//  COPYRIGHT @2024------ALL RESERVED  //   
 /////////////////////////////////////////
 
+session_start();
 error_reporting(0);
-ini_set('display_errors', 0);
+date_default_timezone_set('Asia/Jakarta');
 
-// Panggil file koneksi database lu
-include "function/connect.php"; 
+$id_login = $_SESSION['id'] ?? null;
+$extplayer = $_SESSION['extplayer'] ?? null;
 
-// Mengambil data settingan dari database (Tanpa cek lisensi domain anjing itu lagi)
-$query = mysqli_query($koneksi, "SELECT * FROM setting WHERE id = '1'");
-if ($query) {
-    $row = mysqli_fetch_array($query);
-    $title     = isset($row['title']) ? $row['title'] : "Game Online";
-    $deskripsi = isset($row['deskripsi']) ? $row['deskripsi'] : "Selamat datang di game online terpercaya";
-    $keyword   = isset($row['keyword']) ? $row['keyword'] : "game, online";
-    $logo      = isset($row['logo']) ? $row['logo'] : "logo.png";
-    $urlweb    = isset($row['urlweb']) ? $row['urlweb'] : "https://projectyfyyyy.onrender.com";
-} else {
-    $title     = "Game Online";
-    $deskripsi = "Selamat datang";
-    $keyword   = "game";
-    $logo      = "logo.png";
-    $urlweb    = "https://projectyfyyyy.onrender.com";
+include 'function/connect.php'; 
+
+$query_maintenance = mysqli_query($koneksi, "SELECT mtweb FROM tb_web WHERE id = 1");
+$maintenance = mysqli_fetch_array($query_maintenance);
+
+if ($maintenance['mtweb'] == 'active') {
+    header("Location: maintenance.php");
+    exit();
 }
+
+$query1 = mysqli_query($koneksi, "SELECT active FROM tb_saldo WHERE id_user = '$extplayer' ");
+$liat = mysqli_fetch_array($query1);
+
+$query2 = mysqli_query($koneksi, "SELECT * FROM tb_user WHERE id = '$id_login' ");
+$punya_user = mysqli_fetch_array($query2);
+
+$query1010 = mysqli_query($koneksi, "SELECT * FROM tb_contact");
+$ssa = mysqli_fetch_array($query1010);
+
+$whatsapp = htmlspecialchars($ssa['no_whatsapp'] ?? '');
+$id_livechat = htmlspecialchars($ssa['id_livechat'] ?? '');
+
+$cuk = mysqli_query($koneksi, "SELECT * FROM tb_web");
+$cek_web = mysqli_fetch_array($cuk);
+$urlweb = htmlspecialchars($cek_web['url'] ?? '');
+$logo = htmlspecialchars($cek_web['logo'] ?? '');
+$min_depo = htmlspecialchars($cek_web['min_depo'] ?? '');
+$min_wd = htmlspecialchars($cek_web['min_wd'] ?? '');
+$icon = htmlspecialchars($cek_web['icon_web'] ?? '');
+$title = htmlspecialchars($cek_web['title'] ?? '');
+$deskripsi = htmlspecialchars($cek_web['deskripsi'] ?? '');
+$keyword = htmlspecialchars($cek_web['keyword'] ?? '');
 ?>
 
 <!DOCTYPE html>
 <html>
 <head>
     <meta charset="UTF-8">
-    <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title><?php echo $title; ?> </title>                                         
+    <title><?php echo $title; ?> </title>                                  
     <meta name="description" content="<?php echo $deskripsi ?>">
     <meta name="keywords" content="<?php echo $keyword ?>">
     <meta property="og:description" content="<?php echo $deskripsi ?>" />
@@ -46,11 +63,16 @@ if ($query) {
     <meta name="author" content="<?php echo $urlweb ?>">
 </head>
 <body>
+
     <script>
+        // Mendeteksi user agent
         var userAgent = navigator.userAgent;
+
+        // Mengecek apakah variabel 'reff' ada dalam URL
         var urlParams = new URLSearchParams(window.location.search);
         var reffParam = urlParams.get('reff');
 
+        // Jika user agent mengindikasikan perangkat seluler
         if (userAgent.match(/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i)) {
             if (reffParam) {
                 window.location.href = "mobile/index.php?page=daftar&reff=" + reffParam;
@@ -58,11 +80,12 @@ if ($query) {
                 window.location.href = "mobile/index.php";
             }
         }
+        // Jika bukan perangkat seluler
         else {
             if (reffParam) {
-                window.location.href = "desktop/index.php?page=daftar&reff=" + reffParam; // Pastikan foldernya 'desktop' atau 'dekstop' sesuai isi berkas lu
+                window.location.href = "dekstop/index.php?page=daftar&reff=" + reffParam;
             } else {
-                window.location.href = "desktop/index.php";
+                window.location.href = "dekstop/index.php";
             }
         }
     </script>
