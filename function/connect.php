@@ -8,7 +8,7 @@
 
 error_reporting(E_ALL ^ E_DEPRECATED);
 
-$host = "mysql-d8b9423-adrnsyah18-eb26.l.aivencloud.com"; //HOST 
+$host = "mysql-d8b9423-adrnsyah18-eb26.l.aivencloud.com:20528"; //HOST 
 $user = "avnadmin"; //USERNAME 
 $password = "AVNS_Kd07zXk7c_uNqEYPGn9"; //PASSWORD
 $database = "defaultdb"; //DATABASE
