@@ -8,10 +8,10 @@
 
 error_reporting(E_ALL ^ E_DEPRECATED);
 
-$host = "Localhost"; //HOST 
-$user = "u263618555_newsoftgaming"; //USERNAME 
-$password = "Hayker191205"; //PASSWORD
-$database = "u263618555_newsoftgaming"; //DATABASE
+$host = "mysql-d8b9423-adrnsyah18-eb26.l.aivencloud.com"; //HOST 
+$user = "avnadmin"; //USERNAME 
+$password = "AVNS_Kd07zXk7c_uNqEYPGn9"; //PASSWORD
+$database = "defaultdb"; //DATABASE
 
 $koneksi = mysqli_connect($host,$user,$password,$database) or die(mysqli_error());
 if($koneksi){ 
