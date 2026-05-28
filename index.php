@@ -1,10 +1,3 @@
-<?php
-
-/////////////////////////////////////////
-//  LICENSE GAMES BY     : SOFTGAMINGS //
-//  SOURCE CODE BUILD BY : ZULHAYKER   //
-//  COPYRIGHT @2024------ALL RESERVED  //   
-/////////////////////////////////////////
 
 <!DOCTYPE html>
 <html>
