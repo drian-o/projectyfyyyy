@@ -7,7 +7,7 @@
 
 // INI ENDPOINT CONNECT WEBSITE JANGAN DI GANGGU APABILA TIDAK ADA PERUBAHAN TERHADAP SERVER
 
-$domains = 'https://borneo138.xyz';
+$domains = 'https://projectyfyyyy.onrender.com';
 
 $apiUrl = "$domains/domain.php?domain=" . $domain;
 ?>
