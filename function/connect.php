@@ -1,5 +1,6 @@
 <?php
-error_reporting(E_ALL ^ E_DEPRECATED);
+error_reporting(0);
+ini_set('display_errors', 0);
 
 $host = "mysql-d8b9423-adrnsyah18-eb26.l.aivencloud.com"; 
 $user = "avnadmin"; 
