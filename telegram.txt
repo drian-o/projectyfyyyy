@@ -1,0 +1,85 @@
+untuk mengirimkan user deposit dan withdraw ke bot telegram dan notifikasi juga masuk di panel admin gunakan kode ini
+ 
+<?php
+// Fungsi untuk mengirim pesan ke bot Telegram
+function kirimPesanTelegram($chat_id, $pesan, $bot_token) {
+    $url = "https://api.telegram.org/bot$bot_token/sendMessage";
+    $data = array('chat_id' => $chat_id, 'text' => $pesan);
+
+    // Mengirim permintaan POST ke API Bot Telegram
+    $ch = curl_init($url);
+    curl_setopt($ch, CURLOPT_POST, 1);
+    curl_setopt($ch, CURLOPT_POSTFIELDS, $data);
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+    $response = curl_exec($ch);
+    curl_close($ch);
+
+    // Mengembalikan respons dari API Bot Telegram
+    return $response;
+}
+// Token bot Telegram Anda
+$bot_token = 'YOUR_BOT_TOKEN';
+
+$notifikasi = [];
+
+// Query untuk mendapatkan data deposit pending terbaru
+$query_deposit = mysqli_query($koneksi, "SELECT * FROM tb_transaksi WHERE status = 'Pending' AND transaksi = 'Top Up' ORDER BY id DESC LIMIT 1");
+$data_deposit = mysqli_fetch_assoc($query_deposit);
+
+// Jika ada data deposit pending
+if ($data_deposit) {
+    $id_user_deposit = $data_deposit['id_user'];
+    $query_user_deposit = mysqli_query($koneksi, "SELECT * FROM tb_user WHERE extplayer = '$id_user_deposit'");
+    $data_user_deposit = mysqli_fetch_assoc($query_user_deposit);
+
+    // Kirim pesan Telegram untuk deposit
+    $chat_id_deposit = 'YOUR_CHAT_ID'; // Ganti dengan ID obrolan atau ID pengguna Telegram
+    $pesan_deposit = $data_user_deposit['username'] . " Melakukan Top Up Saldo Senilai Rp. " . number_format($data_deposit['total']) . ". Silakan konfirmasi."; // Pesan yang akan dikirim
+
+    // Tambahkan pesan deposit ke dalam variabel notifikasi
+    $notifikasi[] = $pesan_deposit;
+
+    // Kirim pesan Telegram
+    kirimPesanTelegram($chat_id_deposit, $pesan_deposit, $bot_token);
+
+    // Tautan untuk konfirmasi deposit
+    $link_konfirmasi_deposit = "?page=permintaan_deposit";
+}
+
+// Query untuk mendapatkan data withdraw pending terbaru
+$query_withdraw = mysqli_query($koneksi, "SELECT * FROM tb_transaksi WHERE status = 'Pending' AND transaksi = 'Withdraw' ORDER BY id DESC LIMIT 1");
+$data_withdraw = mysqli_fetch_assoc($query_withdraw);
+
+// Jika ada data withdraw pending
+if ($data_withdraw) {
+    $id_user_withdraw = $data_withdraw['id_user'];
+    $query_user_withdraw = mysqli_query($koneksi, "SELECT * FROM tb_user WHERE extplayer = '$id_user_withdraw'");
+    $data_user_withdraw = mysqli_fetch_assoc($query_user_withdraw);
+
+    // Kirim pesan Telegram untuk withdraw
+    $chat_id_withdraw = 'YOUR_CHAT_ID'; // Ganti dengan ID obrolan atau ID pengguna Telegram
+    $pesan_withdraw = $data_user_withdraw['username'] . " Melakukan Penarikan Saldo Senilai Rp. " . number_format($data_withdraw['total']) . ". Silakan konfirmasi."; // Pesan yang akan dikirim
+
+    // Tambahkan pesan withdraw ke dalam variabel notifikasi
+    $notifikasi[] = $pesan_withdraw;
+
+    // Kirim pesan Telegram
+    kirimPesanTelegram($chat_id_withdraw, $pesan_withdraw, $bot_token);
+
+    // Tautan untuk konfirmasi withdraw
+    $link_konfirmasi_withdraw = "?page=permintaan_withdraw";
+}
+?>
+
+<!-- Tampilkan notifikasi di dashboard admin -->
+<?php foreach ($notifikasi as $pesan) : ?>
+    <div class="alert alert-info"><?php echo $pesan; ?>
+        <?php if (isset($link_konfirmasi_deposit)) : ?>
+            <a href="<?php echo $link_konfirmasi_deposit; ?>" class="btn btn-primary">Silakan konfirmasi Deposit</a>
+        <?php endif; ?>
+        <?php if (isset($link_konfirmasi_withdraw)) : ?>
+            <a href="<?php echo $link_konfirmasi_withdraw; ?>" class="btn btn-primary">Silakan konfirmasi Withdraw</a>
+        <?php endif; ?>
+    </div>
+<?php endforeach; ?>
+

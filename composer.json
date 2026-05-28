@@ -1,0 +1,6 @@
+{
+    "require": {
+        "ezyang/htmlpurifier": "^4.17",
+        "bandwidth-throttle/token-bucket": "*"
+    }
+}
